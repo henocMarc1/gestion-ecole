@@ -4,6 +4,7 @@
  * Ce fichier montre comment utiliser les nouveaux composants
  * ResponsiveTable et ResponsiveModal
  */
+'use client';
 
 import { useState } from 'react';
 import { ResponsiveTable } from '@/components/ui/TableContainer';

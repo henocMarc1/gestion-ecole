@@ -1,5 +1,5 @@
 // Export all UI components
-export { Card, CardHeader, CardContent, CardFooter } from './Card';
+export { Card, CardHeader, CardContent } from './Card';
 export { Button } from './Button';
 export { Input } from './Input';
 export { Avatar } from './Avatar';

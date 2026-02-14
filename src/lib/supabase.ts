@@ -26,12 +26,23 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
  * NE JAMAIS utiliser côté client - Cette fonction est pour les API routes seulement
  */
 export function getSupabaseAdmin() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key';
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   
-  // En production, vérifier que les vraies valeurs sont configurées
-  if (process.env.NODE_ENV === 'production' && (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY)) {
-    throw new Error('Supabase admin credentials not configured in server environment');
+  // Pendant le build, retourner un client dummy pour permettre la compilation
+  if (!url || !key) {
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL === undefined && process.env.NODE_ENV === 'production') {
+      // En production sans variables, lancer l'erreur
+      throw new Error('Supabase admin credentials not configured in server environment');
+    }
+    
+    // Retourner un client avec placeholder pour le build
+    return createClient('https://placeholder.supabase.co', 'placeholder-key', {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
   }
   
   return createClient(url, key, {

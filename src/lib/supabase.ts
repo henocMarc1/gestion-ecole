@@ -4,11 +4,12 @@ import { createClient } from '@supabase/supabase-js';
 /**
  * Client Supabase pour les composants client
  */
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
 
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables. Check .env.local');
+// Avertissement en développement si les variables ne sont pas configurées
+if (typeof window !== 'undefined' && (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
+  console.warn('⚠️ Supabase environment variables not configured. Please check .env.local');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
@@ -25,10 +26,11 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
  * NE JAMAIS utiliser côté client - Cette fonction est pour les API routes seulement
  */
 export function getSupabaseAdmin() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY || 'placeholder-service-key';
   
-  if (!url || !key) {
+  // En production, vérifier que les vraies valeurs sont configurées
+  if (process.env.NODE_ENV === 'production' && (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY)) {
     throw new Error('Supabase admin credentials not configured in server environment');
   }
   

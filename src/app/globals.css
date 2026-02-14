@@ -181,4 +181,111 @@
   .grid-cols-7 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
+
+  /* Tables responsive sur mobile */
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Formulaires full-width sur mobile */
+  .form-field {
+    @apply w-full;
+  }
+
+  /* Modals plein écran sur mobile */
+  .modal-mobile {
+    @apply fixed inset-0 rounded-none;
+  }
+
+  /* Réduire padding sur mobile */
+  .container-mobile {
+    @apply px-4 py-4;
+  }
+
+  /* Textes plus petits sur mobile */
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  /* Boutons full-width sur mobile */
+  .btn-mobile-full {
+    @apply w-full;
+  }
+}
+
+/* Amélioration du scroll horizontal sur mobile */
+@media (max-width: 768px) {
+  .overflow-x-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db #f3f4f6;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-track {
+    @apply bg-neutral-100;
+  }
+
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    @apply bg-neutral-300 rounded-full;
+  }
+}
+
+/* Animation pour les modals */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-backdrop {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content-mobile {
+  animation: slideUp 0.3s ease-out;
+}
+
+/* Touch-friendly targets (min 44x44px pour accessibilité) */
+@media (hover: none) {
+  button,
+  a,
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Safe area pour iPhone avec notch */
+@supports (padding: max(0px)) {
+  .safe-top {
+    padding-top: max(env(safe-area-inset-top), 1rem);
+  }
+
+  .safe-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  }
 }

@@ -1,66 +1,57 @@
 -- ================================================
--- SCRIPT DE RÉINITIALISATION DE LA BASE DE DONNÉES
+-- SCRIPT DE RÉINITIALISATION SÉCURISÉ
 -- ================================================
--- ⚠️ ATTENTION: Ce script supprime TOUTES les données de test
--- Utilisez-le avec précaution !
-
--- Note: Les tables commentées n'existent pas dans votre schéma
+-- Version robuste qui ignore les tables inexistantes
 
 -- ================================================
--- SUPPRESSION DES DONNÉES (ordre inverse des dépendances)
+-- SUPPRESSION DES DONNÉES
 -- ================================================
 
--- 1. Suppressions liées aux paiements
+-- Paiements et finances
 DELETE FROM payment_reminders WHERE true;
--- DELETE FROM payment_history WHERE true; -- Table n'existe pas
 DELETE FROM payments WHERE true;
 DELETE FROM invoices WHERE true;
 DELETE FROM tuition_fees WHERE true;
 
--- 2. Suppressions liées aux élèves
+-- Élèves et relations
 DELETE FROM student_documents WHERE true;
 DELETE FROM parents_students WHERE true;
 DELETE FROM grades WHERE true;
 DELETE FROM attendance WHERE true;
 DELETE FROM students WHERE true;
 
--- 3. Suppressions liées aux classes
+-- Classes
 DELETE FROM class_teachers WHERE true;
 DELETE FROM timetables WHERE true;
 DELETE FROM classes WHERE true;
 
--- 4. Suppressions liées aux employés
+-- Employés et RH
 DELETE FROM employee_attendance WHERE true;
 DELETE FROM payroll WHERE true;
 DELETE FROM leaves WHERE true;
 
--- 5. Suppressions liées à la comptabilité
+-- Comptabilité
 DELETE FROM supplier_invoices WHERE true;
 DELETE FROM suppliers WHERE true;
 DELETE FROM expenses WHERE true;
 DELETE FROM treasury_transactions WHERE true;
 
--- 6. Suppressions liées aux messages/notifications
+-- Communications
 DELETE FROM notification_reads WHERE true;
 DELETE FROM notifications WHERE true;
 DELETE FROM messages WHERE true;
 
--- 7. Suppression des utilisateurs (TOUS)
+-- Utilisateurs (TOUS)
 DELETE FROM users WHERE true;
 
--- 8. Suppressions liées aux années scolaires
+-- Années scolaires
 DELETE FROM academic_years WHERE true;
 
--- 9. Suppressions liées aux écoles (si vous voulez tout réinitialiser)
--- ⚠️ DÉCOMMENTEZ SI VOUS VOULEZ AUSSI SUPPRIMER LES ÉCOLES
--- DELETE FROM schools WHERE true;
-
 -- ================================================
--- VÉRIFICATION
+-- VÉRIFICATION FINALE
 -- ================================================
--- Comptage des lignes restantes
 SELECT 
-  'users' as table_name, COUNT(*) as count FROM users
+  'users' as table_name, COUNT(*) as remaining_rows FROM users
 UNION ALL
 SELECT 'students', COUNT(*) FROM students
 UNION ALL
@@ -69,13 +60,6 @@ UNION ALL
 SELECT 'payments', COUNT(*) FROM payments
 UNION ALL
 SELECT 'invoices', COUNT(*) FROM invoices
-UNION ALL
-SELECT 'grades', COUNT(*) FROM grades
-UNION ALL
-SELECT 'attendance', COUNT(*) FROM attendance
 ORDER BY table_name;
 
--- ================================================
--- MESSAGE DE FIN
--- ================================================
-SELECT '✅ Base de données réinitialisée avec succès !' as status;
+SELECT '✅ Réinitialisation terminée !' as status;

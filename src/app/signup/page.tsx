@@ -58,7 +58,8 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      // 1. Créer l'utilisateur dans Supabase Auth
+      // Créer l'utilisateur dans Supabase Auth
+      // Le trigger PostgreSQL créera automatiquement l'entrée dans public.users
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -66,13 +67,14 @@ export default function SignupPage() {
           emailRedirectTo: `${window.location.origin}/login`,
           data: {
             full_name: formData.fullName,
+            role: 'SUPER_ADMIN', // Passé au trigger via metadata
           },
         },
       });
 
       if (authError) {
         console.error('Auth error:', authError);
-        toast.error('Erreur: ' + authError.message);
+        toast.error('Erreur lors de la création du compte: ' + authError.message);
         setIsLoading(false);
         return;
       }
@@ -83,29 +85,12 @@ export default function SignupPage() {
         return;
       }
 
-      // 2. Créer l'entrée SuperAdmin dans la table users
-      const { error: dbError } = await supabase.from('users').insert({
-        id: authData.user.id,
-        email: formData.email,
-        full_name: formData.fullName,
-        role: 'SUPER_ADMIN',
-        is_active: true,
-        must_change_password: false,
-      });
-
-      if (dbError) {
-        console.error('Database error:', dbError);
-        toast.error('Erreur: ' + dbError.message);
-        setIsLoading(false);
-        return;
-      }
-
       toast.success('✅ Compte SuperAdmin créé avec succès!');
       
       // Message si confirmation email requise
       if (authData.user && !authData.session) {
-        toast.info('📧 Vérifiez votre email pour confirmer votre compte', {
-          duration: 5000,
+        toast.info('📧 Vérifiez votre email pour confirmer votre compte avant de vous connecter', {
+          duration: 6000,
         });
       }
       
@@ -114,6 +99,7 @@ export default function SignupPage() {
         router.push('/login');
       }, 2000);
     } catch (error: any) {
+      console.error('Signup error:', error);
       toast.error('Erreur: ' + (error.message || 'Erreur inconnue'));
     } finally {
       setIsLoading(false);

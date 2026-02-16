@@ -470,6 +470,7 @@ export default function UsersPage() {
                     value={newUserData.password}
                     onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
                     placeholder="Minimum 6 caractères"
+                    autoComplete="new-password"
                     required
                   />
                 </div>
@@ -483,6 +484,7 @@ export default function UsersPage() {
                     value={newUserData.confirmPassword}
                     onChange={(e) => setNewUserData({ ...newUserData, confirmPassword: e.target.value })}
                     placeholder="Retaper le mot de passe"
+                    autoComplete="new-password"
                     required
                   />
                 </div>

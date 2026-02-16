@@ -268,6 +268,7 @@ export default function SettingsPage() {
                       type="password"
                       value={passwordData.currentPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+                      autoComplete="current-password"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
                     />
                   </div>
@@ -280,6 +281,7 @@ export default function SettingsPage() {
                       type="password"
                       value={passwordData.newPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+                      autoComplete="new-password"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
                     />
                     <p className="text-xs text-gray-500 mt-1">Minimum 8 caractères</p>
@@ -293,6 +295,7 @@ export default function SettingsPage() {
                       type="password"
                       value={passwordData.confirmPassword}
                       onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+                      autoComplete="new-password"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
                     />
                   </div>

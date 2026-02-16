@@ -532,6 +532,7 @@ export default function AccountsPage() {
                     placeholder="Minimum 6 caractères"
                     value={newUserData.password}
                     onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
+                    autoComplete="new-password"
                     required
                     minLength={6}
                   />
@@ -546,6 +547,7 @@ export default function AccountsPage() {
                     placeholder="Retapez le mot de passe"
                     value={newUserData.confirmPassword}
                     onChange={(e) => setNewUserData({ ...newUserData, confirmPassword: e.target.value })}
+                    autoComplete="new-password"
                     required
                     minLength={6}
                   />

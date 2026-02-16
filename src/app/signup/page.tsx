@@ -62,16 +62,23 @@ export default function SignupPage() {
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/login`,
+          data: {
+            full_name: formData.fullName,
+          },
+        },
       });
 
       if (authError) {
+        console.error('Auth error:', authError);
         toast.error('Erreur: ' + authError.message);
         setIsLoading(false);
         return;
       }
 
       if (!authData.user) {
-        toast.error('Erreur lors de la création de l\'utilisateur');
+        toast.error('Erreur lors de la création du compte');
         setIsLoading(false);
         return;
       }
@@ -87,12 +94,20 @@ export default function SignupPage() {
       });
 
       if (dbError) {
+        console.error('Database error:', dbError);
         toast.error('Erreur: ' + dbError.message);
         setIsLoading(false);
         return;
       }
 
       toast.success('✅ Compte SuperAdmin créé avec succès!');
+      
+      // Message si confirmation email requise
+      if (authData.user && !authData.session) {
+        toast.info('📧 Vérifiez votre email pour confirmer votre compte', {
+          duration: 5000,
+        });
+      }
       
       // Rediriger vers login
       setTimeout(() => {
@@ -157,6 +172,7 @@ export default function SignupPage() {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   placeholder="admin@ecole.ci"
+                  autoComplete="email"
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                     errors.email ? 'border-danger-500' : 'border-neutral-300'
                   }`}
@@ -178,6 +194,7 @@ export default function SignupPage() {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   placeholder="••••••••"
+                  autoComplete="new-password"
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                     errors.password ? 'border-danger-500' : 'border-neutral-300'
                   }`}
@@ -199,6 +216,7 @@ export default function SignupPage() {
                     setFormData({ ...formData, confirmPassword: e.target.value })
                   }
                   placeholder="••••••••"
+                  autoComplete="new-password"
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                     errors.confirmPassword
                       ? 'border-danger-500'

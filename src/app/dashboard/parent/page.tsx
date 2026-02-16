@@ -264,6 +264,7 @@ export default function ParentDashboard() {
                     placeholder="Minimum 6 caractères"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
+                    autoComplete="new-password"
                     required
                     minLength={6}
                   />
@@ -278,6 +279,7 @@ export default function ParentDashboard() {
                     placeholder="Retapez le mot de passe"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    autoComplete="new-password"
                     required
                     minLength={6}
                   />

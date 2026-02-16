@@ -135,7 +135,7 @@ export default function SignupPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, fullName: e.target.value })
                   }
-                  placeholder="Ex: Jean Dupont"
+                  placeholder="Nom complet"
                   className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition ${
                     errors.fullName ? 'border-danger-500' : 'border-neutral-300'
                   }`}

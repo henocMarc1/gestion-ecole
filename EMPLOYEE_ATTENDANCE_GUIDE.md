@@ -217,7 +217,7 @@ POINTAGES DU 10 FÉVRIER:
 ┌─────────────┬──────┬───────┬───────┬────────┬─────────┐
 │ Employé     │Poste │Arrivée│Départ │ Statut │ Détails │
 ├─────────────┼──────┼───────┼───────┼────────┼─────────┤
-│ Jean Dupont │ Prof │ 08:30 │ 17:00 │ ✅    │ -      │
+│ Employé 1   │ Prof │ 08:30 │ 17:00 │ ✅    │ -      │
 │ Marie Durand│ Prof │ 09:15 │ 17:30 │ ⏰    │ 15 min │
 │ Pierre Lee  │ Prof │ ---   │ ---   │ ❌    │ -      │
 └─────────────┴──────┴───────┴───────┴────────┴─────────┘
@@ -244,14 +244,14 @@ POINTAGES DU 10 FÉVRIER:
 ```
 1. RH ouvre /dashboard/hr/attendance
 2. Filtres: Date=Jour 1, Tous employés
-3. Voit: Jean Dupont - Arrivée: 08:30 - Départ: 17:00 - ✅ Présent
+3. Voit: Employé 1 - Arrivée: 08:30 - Départ: 17:00 - ✅ Présent
 4. Statistiques: 15 présents, 2 absents, 1 retard
 ```
 
 ### Jour 3 - Correction nécessaire
 
 ```
-1. RH voit erreur: Jean a marqué 09:00 au lieu de 08:30
+1. RH voit erreur: Employé a marqué 09:00 au lieu de 08:30
 2. RH clique "Supprimer"
 3. Jean peut remarquer correctement la fois suivante
 ```

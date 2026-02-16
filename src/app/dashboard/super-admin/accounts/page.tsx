@@ -488,7 +488,7 @@ export default function AccountsPage() {
                     Nom complet *
                   </label>
                   <Input
-                    placeholder="Jean Dupont"
+                    placeholder="Nom complet"
                     value={newUserData.full_name}
                     onChange={(e) => setNewUserData({ ...newUserData, full_name: e.target.value })}
                     required

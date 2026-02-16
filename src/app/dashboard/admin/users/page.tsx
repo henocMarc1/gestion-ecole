@@ -410,7 +410,7 @@ export default function UsersPage() {
                   <Input
                     value={newUserData.full_name}
                     onChange={(e) => setNewUserData({ ...newUserData, full_name: e.target.value })}
-                    placeholder="Jean Dupont"
+                    placeholder="Nom complet"
                     required
                   />
                 </div>

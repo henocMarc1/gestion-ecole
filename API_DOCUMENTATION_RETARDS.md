@@ -517,7 +517,7 @@ sort: string (-proposed_at, status)
       "id": "arrangement-uuid-1",
       "invoice_id": "invoice-uuid-1",
       "student_id": "student-uuid-1",
-      "student_name": "Jean Dupont",
+      "student_name": "Nom Élève",
       "class_name": "6è A",
       "arrangement_type": "installments",
       "status": "accepted",

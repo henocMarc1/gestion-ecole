@@ -38,8 +38,8 @@ export default function ExamplePage() {
             <tbody className="divide-y divide-neutral-200">
               <tr className="hover:bg-neutral-50">
                 <td className="px-4 py-3 text-sm">001</td>
-                <td className="px-4 py-3 text-sm font-medium">Jean Dupont</td>
-                <td className="px-4 py-3 text-sm">jean@example.com</td>
+                <td className="px-4 py-3 text-sm font-medium">Utilisateur Exemple</td>
+                <td className="px-4 py-3 text-sm">utilisateur@example.com</td>
                 <td className="px-4 py-3 text-sm">+225 01 02 03 04</td>
                 <td className="px-4 py-3">
                   <span className="px-2 py-1 bg-success-100 text-success-700 text-xs rounded-full">
@@ -93,7 +93,7 @@ export default function ExamplePage() {
               </label>
               <input
                 type="text"
-                defaultValue="Jean Dupont"
+                placeholder="Nom complet"
                 className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
               />
             </div>

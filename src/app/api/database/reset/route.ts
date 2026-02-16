@@ -22,6 +22,9 @@ export async function POST(request: NextRequest) {
           autoRefreshToken: false,
           persistSession: false,
         },
+        db: {
+          schema: 'public',
+        },
       }
     );
 
@@ -59,22 +62,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 6. Le service role key devrait bypasser RLS automatiquement
-    // Mais on va forcer en créant un client configuré correctement
-    const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-        db: {
-          schema: 'public',
-        },
-      }
-    );
-
+    // 6. Exécution de la réinitialisation
     const results = [];
     let totalDeleted = 0;
 

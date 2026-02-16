@@ -58,41 +58,32 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      // Créer l'utilisateur dans Supabase Auth
-      // Le trigger PostgreSQL créera automatiquement l'entrée dans public.users
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/login`,
-          data: {
-            full_name: formData.fullName,
-            role: 'SUPER_ADMIN', // Passé au trigger via metadata
-          },
+      // Appeler l'API de signup (qui utilise le service role key)
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          fullName: formData.fullName,
+        }),
       });
 
-      if (authError) {
-        console.error('Auth error:', authError);
-        toast.error('Erreur lors de la création du compte: ' + authError.message);
-        setIsLoading(false);
-        return;
-      }
+      const data = await response.json();
 
-      if (!authData.user) {
-        toast.error('Erreur lors de la création du compte');
+      if (!response.ok) {
+        console.error('Signup error:', data.error);
+        toast.error('Erreur: ' + (data.error || 'Erreur inconnue'));
         setIsLoading(false);
         return;
       }
 
       toast.success('✅ Compte SuperAdmin créé avec succès!');
-      
-      // Message si confirmation email requise
-      if (authData.user && !authData.session) {
-        toast.info('📧 Vérifiez votre email pour confirmer votre compte avant de vous connecter', {
-          duration: 6000,
-        });
-      }
+      toast.info('📧 Vous pouvez maintenant vous connecter', {
+        duration: 3000,
+      });
       
       // Rediriger vers login
       setTimeout(() => {

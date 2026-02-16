@@ -56,18 +56,15 @@ CREATE TRIGGER on_auth_user_created
   EXECUTE FUNCTION public.handle_new_user();
 
 -- ================================================
--- 3. Commentaires et documentation
--- ================================================
-
-COMMENT ON FUNCTION public.handle_new_user() IS 
-  'Trigger function pour créer automatiquement un enregistrement dans public.users lors de la création dans auth.users. Utilise SECURITY DEFINER pour bypass RLS automatiquement - aucune modification des politiques RLS nécessaire !';
-
-COMMENT ON TRIGGER on_auth_user_created ON auth.users IS 
-  'Insère automatiquement un nouvel utilisateur dans public.users après sa création dans auth.users. Le trigger SECURITY DEFINER bypass les politiques RLS, permettant l''inscription sans erreur 403.';
-
--- ================================================
 -- ✅ TERMINÉ !
 -- ================================================
 -- Le trigger est maintenant actif.
+-- 
+-- Comment ça fonctionne:
+-- 1. Quand un utilisateur s'inscrit, auth.users est créé
+-- 2. Le trigger on_auth_user_created se déclenche automatiquement
+-- 3. La fonction handle_new_user() insère dans public.users
+-- 4. SECURITY DEFINER permet de bypass les politiques RLS
+--
 -- Prochaine étape: Exécuter fix_missing_profiles.sql
 -- pour créer les profils des utilisateurs existants.

@@ -7,6 +7,23 @@ import { createClient } from '@supabase/supabase-js';
  */
 export async function POST(request: NextRequest) {
   try {
+    // Vérifier les variables d'environnement
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      console.error('Missing NEXT_PUBLIC_SUPABASE_URL');
+      return NextResponse.json(
+        { error: 'Configuration serveur incomplète: NEXT_PUBLIC_SUPABASE_URL manquante' },
+        { status: 500 }
+      );
+    }
+
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('Missing SUPABASE_SERVICE_ROLE_KEY');
+      return NextResponse.json(
+        { error: 'Configuration serveur incomplète: SUPABASE_SERVICE_ROLE_KEY manquante' },
+        { status: 500 }
+      );
+    }
+
     const { email, password, fullName } = await request.json();
 
     // Validation
@@ -19,8 +36,8 @@ export async function POST(request: NextRequest) {
 
     // Client Supabase avec service role (bypass RLS)
     const supabaseAdmin = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
       {
         auth: {
           autoRefreshToken: false,
@@ -99,8 +116,15 @@ export async function POST(request: NextRequest) {
         id: authData.user.id,
         email: authData.user.email,
       },
-    });  } catch (error: any) {
+    });
+  } catch (error: any) {
     console.error('Signup error:', error);
+    return NextResponse.json(
+      { error: error.message || 'Erreur inconnue' },
+      { status: 500 }
+    );
+  }
+}
     return NextResponse.json(
       { error: error.message || 'Erreur inconnue' },
       { status: 500 }

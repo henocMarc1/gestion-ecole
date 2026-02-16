@@ -59,7 +59,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 6. Exécution manuelle table par table - ORDRE IMPORTANT (dépendances)
+    // 6. Le service role key devrait bypasser RLS automatiquement
+    // Mais on va forcer en créant un client configuré correctement
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+        db: {
+          schema: 'public',
+        },
+      }
+    );
+
+    const results = [];
+    let totalDeleted = 0;
+
+    // Ordre de suppression pour respecter les contraintes FK
     const tables = [
       'payment_reminders',
       'payments',
@@ -87,35 +106,37 @@ export async function POST(request: NextRequest) {
       'academic_years',
     ];
 
-    const results = [];
-    let totalDeleted = 0;
-
     for (const table of tables) {
       try {
-        // Récupérer d'abord le nombre de lignes
-        const { count: beforeCount } = await supabaseAdmin
+        // Compter avant
+        const { count: beforeCount, error: countError } = await supabaseAdmin
           .from(table)
           .select('*', { count: 'exact', head: true });
 
-        // Supprimer TOUTES les lignes (utilise NOT null qui est toujours vrai)
-        const { error } = await supabaseAdmin
+        if (countError) {
+          console.error(`Erreur comptage ${table}:`, countError);
+          results.push({ table, deleted: 0, status: 'error', error: countError.message });
+          continue;
+        }
+
+        // Supprimer avec une requête qui match toujours (id IS NOT NULL)
+        const { error: deleteError } = await supabaseAdmin
           .from(table)
           .delete()
-          .not('id', 'is', null);
+          .neq('id', '00000000-0000-0000-0000-000000000000'); // Condition qui match tout
 
-        if (!error) {
+        if (deleteError) {
+          console.error(`Erreur suppression ${table}:`, deleteError);
+          results.push({ table, deleted: 0, status: 'error', error: deleteError.message });
+        } else {
           const deleted = beforeCount || 0;
           totalDeleted += deleted;
           results.push({ table, deleted, status: 'success' });
           console.log(`✅ ${table}: ${deleted} lignes supprimées`);
-        } else {
-          console.error(`❌ Erreur suppression ${table}:`, error);
-          results.push({ table, deleted: 0, status: 'error', error: error.message });
         }
       } catch (e: any) {
-        // Ignorer les tables qui n'existent pas
-        console.log(`⚠️ Table ${table} ignorée:`, e.message);
-        results.push({ table, deleted: 0, status: 'skipped', error: e.message });
+        console.log(`⚠️ Erreur ${table}:`, e.message);
+        results.push({ table, deleted: 0, status: 'error', error: e.message });
       }
     }
 

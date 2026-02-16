@@ -188,23 +188,11 @@ BEGIN
     RAISE NOTICE 'RLS réactivé sur: %', r.tablename;
   END LOOP;
   
+  RAISE NOTICE '';
+  RAISE NOTICE '========================================';
+  RAISE NOTICE '✅ RÉINITIALISATION TERMINÉE AVEC SUCCÈS';
+  RAISE NOTICE '========================================';
+  RAISE NOTICE 'Toutes les tables ont été vidées.';
+  RAISE NOTICE 'Vous pouvez maintenant créer de nouvelles données.';
+  
 END $$;
-
--- ================================================
--- VÉRIFICATION FINALE
--- ================================================
-SELECT 
-  'users' as table_name, COUNT(*) as remaining_rows FROM users
-UNION ALL
-SELECT 'students', COUNT(*) FROM students
-UNION ALL
-SELECT 'classes', COUNT(*) FROM classes
-UNION ALL
-SELECT 'payments', COUNT(*) FROM payments
-UNION ALL
-SELECT 'invoices', COUNT(*) FROM invoices
-UNION ALL
-SELECT 'academic_years', COUNT(*) FROM academic_years
-ORDER BY table_name;
-
-SELECT '✅ Réinitialisation terminée - Toutes les tables sont vides !' as status;

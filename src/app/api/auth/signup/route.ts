@@ -54,21 +54,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 2. Créer le profil dans public.users (avec service role, bypass RLS)
-    const { error: dbError } = await supabaseAdmin.from('users').upsert({
+    // 2. Récupérer la première école (pour l'assigner au nouveau profil)
+    const { data: schools, error: schoolError } = await supabaseAdmin
+      .from('schools')
+      .select('id')
+      .limit(1);
+
+    if (schoolError || !schools || schools.length === 0) {
+      console.error('No schools found:', schoolError);
+      // Supprimer l'utilisateur auth si pas d'école
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      return NextResponse.json(
+        { error: 'Aucune école trouvée. Veuillez créer une école d\'abord.' },
+        { status: 500 }
+      );
+    }
+
+    const schoolId = schools[0].id;
+
+    // 3. Créer le profil dans public.users (avec school_id)
+    const { error: dbError } = await supabaseAdmin.from('users').insert({
       id: authData.user.id,
       email: email,
       full_name: fullName,
       role: 'SUPER_ADMIN',
+      school_id: schoolId, // Assigner à la première école
       is_active: true,
       must_change_password: false,
-    }, {
-      onConflict: 'id', // Si l'ID existe déjà, le mettre à jour
     });
 
     if (dbError) {
       console.error('Database error:', dbError);
-      // Ne pas supprimer l'utilisateur auth car le profil existe peut-être déjà
+      // Supprimer l'utilisateur auth si l'insertion échoue
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
       return NextResponse.json(
         { error: 'Erreur lors de la création du profil: ' + dbError.message },
         { status: 500 }
@@ -81,8 +99,7 @@ export async function POST(request: NextRequest) {
         id: authData.user.id,
         email: authData.user.email,
       },
-    });
-  } catch (error: any) {
+    });  } catch (error: any) {
     console.error('Signup error:', error);
     return NextResponse.json(
       { error: error.message || 'Erreur inconnue' },

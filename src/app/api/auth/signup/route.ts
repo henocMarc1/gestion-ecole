@@ -89,8 +89,9 @@ export async function POST(request: NextRequest) {
 
     const schoolId = schools[0].id;
 
-    // 3. Créer le profil dans public.users (avec school_id)
-    const { error: dbError } = await supabaseAdmin.from('users').insert({
+    // 3. Créer ou mettre à jour le profil dans public.users (avec school_id)
+    // Utiliser un upsert pour éviter les erreurs de clé dupliquée
+    const { error: dbError } = await supabaseAdmin.from('users').upsert({
       id: authData.user.id,
       email: email,
       full_name: fullName,
@@ -98,6 +99,8 @@ export async function POST(request: NextRequest) {
       school_id: schoolId, // Assigner à la première école
       is_active: true,
       must_change_password: false,
+    }, {
+      onConflict: 'id', // Si l'ID existe déjà, mettre à jour
     });
 
     if (dbError) {
@@ -119,12 +122,6 @@ export async function POST(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('Signup error:', error);
-    return NextResponse.json(
-      { error: error.message || 'Erreur inconnue' },
-      { status: 500 }
-    );
-  }
-}
     return NextResponse.json(
       { error: error.message || 'Erreur inconnue' },
       { status: 500 }

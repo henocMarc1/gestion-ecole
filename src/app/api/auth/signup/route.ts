@@ -55,19 +55,20 @@ export async function POST(request: NextRequest) {
     }
 
     // 2. Créer le profil dans public.users (avec service role, bypass RLS)
-    const { error: dbError } = await supabaseAdmin.from('users').insert({
+    const { error: dbError } = await supabaseAdmin.from('users').upsert({
       id: authData.user.id,
       email: email,
       full_name: fullName,
       role: 'SUPER_ADMIN',
       is_active: true,
       must_change_password: false,
+    }, {
+      onConflict: 'id', // Si l'ID existe déjà, le mettre à jour
     });
 
     if (dbError) {
       console.error('Database error:', dbError);
-      // Essayer de supprimer l'utilisateur auth si l'insertion échoue
-      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      // Ne pas supprimer l'utilisateur auth car le profil existe peut-être déjà
       return NextResponse.json(
         { error: 'Erreur lors de la création du profil: ' + dbError.message },
         { status: 500 }
